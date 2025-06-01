@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SkinLabs 🌟
 
-## Getting Started
+## Descripción
+SkinLabs es una aplicación web moderna desarrollada con Next.js, TypeScript y Tailwind CSS. Este proyecto está diseñado para ofrecer una experiencia de usuario excepcional con las últimas tecnologías web.
 
-First, run the development server:
+## Tecnologías Principales 🚀
+- [Next.js](https://nextjs.org/) (v15.3.3) - Framework de React para producción
+- [React](https://reactjs.org/) (v19.0.0) - Biblioteca para interfaces de usuario
+- [TypeScript](https://www.typescriptlang.org/) - Superset tipado de JavaScript
+- [Tailwind CSS](https://tailwindcss.com/) - Framework de CSS utilitario
+- [Docker](https://www.docker.com/) - Containerización
 
+## Requisitos Previos 📋
+- Node.js (versión recomendada: 18.x o superior)
+- npm o yarn
+- Docker (opcional, para desarrollo con contenedores)
+
+## Instalación 🛠️
+
+### Desarrollo Local
 ```bash
+# Clonar el repositorio
+git clone [url-del-repositorio]
+
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Usando Docker
+```bash
+# Construir la imagen
+docker-compose build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Iniciar los contenedores
+docker-compose up
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts Disponibles 📜
+- `npm run dev` - Inicia el servidor de desarrollo
+- `npm run build` - Construye la aplicación para producción
+- `npm run start` - Inicia el servidor de producción
+- `npm run lint` - Ejecuta el linter
 
-## Learn More
+## Estructura del Proyecto 📁
+```
+skinslabs/
+├── pages/          # Páginas de Next.js
+├── public/         # Archivos estáticos
+├── src/           # Código fuente
+├── .next/         # Archivos generados por Next.js
+├── Dockerfile     # Configuración de Docker
+└── docker-compose.yml
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Configuración de Desarrollo 🔧
+El proyecto incluye:
+- ESLint para linting
+- TypeScript para tipado estático
+- Tailwind CSS para estilos
+- Configuración de Docker para desarrollo y producción
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Despliegue 🚀
+La aplicación está configurada para ser desplegada fácilmente en plataformas como Vercel o utilizando Docker en cualquier proveedor de servicios en la nube.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Construir para producción
+npm run build
 
-## Deploy on Vercel
+# Iniciar en producción
+npm run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contribuir 🤝
+1. Fork del repositorio
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit de tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
