@@ -1,0 +1,18 @@
+# Ignora archivos que no se necesitan en producción
+node_modules
+.next
+.vscode
+.git
+*.log
+.env*
+tests
+coverage
+README.md
+Dockerfile
+docker-compose.yml
+health.js
+.gitignore
+.eslintrc*
+jest.config*
+**/*.test.*
+**/*.spec.*
