@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 interface FAQItemProps {
     question: string
@@ -11,29 +12,28 @@ function FAQItem({ question, answer }: FAQItemProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     return (
-        <div className="border-b border-gray-200">
+        <div className="border-b border-slate-800">
             <button
-                className="flex justify-between items-center w-full py-6 text-left"
+                className="flex justify-between items-center w-full py-4 text-left transition-colors duration-200 hover:text-sky-400"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <span className="text-lg font-medium text-gray-900">{question}</span>
+                <span className="text-lg font-medium text-white">{question}</span>
                 <span className="ml-6 flex-shrink-0">
-                    {isOpen ? (
-                        <svg className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                        </svg>
-                    ) : (
-                        <svg className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                    )}
+                    <svg 
+                        className={`h-6 w-6 text-sky-400 transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                 </span>
             </button>
-            {isOpen && (
-                <div className="pb-6">
-                    <p className="text-base text-gray-700">{answer}</p>
+            <div className={`transition-all duration-200 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+                <div className="pb-4">
+                    <p className="text-base text-slate-200">{answer}</p>
                 </div>
-            )}
+            </div>
         </div>
     )
 }
@@ -67,23 +67,41 @@ export default function FAQ() {
     ]
 
     return (
-        <section id="faq" className="py-24 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <>
+        <section id="faq" className="relative py-28 lg:py-32 overflow-hidden">
+            <div className="relative w-[90%] lg:w-full max-w-7xl mx-auto px-6 lg:px-12">
                 <div className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                    <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                         Preguntas Frecuentes
                     </h2>
-                    <p className="mt-4 text-lg text-gray-700">
-                        Encuentra respuestas a las preguntas más comunes sobre nuestros servicios.
+                    <p className="mt-4 text-lg text-slate-200">
+                        Resolvemos tus dudas sobre nuestros servicios y cómo podemos ayudarte.
                     </p>
                 </div>
 
-                <div className="max-w-3xl mx-auto divide-y divide-gray-200">
-                    {faqs.map((faq, index) => (
-                        <FAQItem key={index} {...faq} />
-                    ))}
+                <div className="max-w-4xl mx-auto">
+                    <div className="max-w-3xl mx-auto divide-y divide-slate-800">
+                        {faqs.map((faq, index) => (
+                            <FAQItem key={index} {...faq} />
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-16">
+                        <p className="text-slate-200">
+                            ¿No encuentras la respuesta que buscas?{' '}
+                            <Link
+                                href="https://wa.me/56912345678?text=Hola,%20tengo%20una%20consulta%20sobre%20SkinsLabs"
+                                className="text-sky-400 font-medium hover:text-sky-300 transition-colors"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Contáctanos directamente
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
+        </>
     )
 } 
