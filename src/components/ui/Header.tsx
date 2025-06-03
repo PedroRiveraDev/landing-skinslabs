@@ -3,15 +3,27 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export default function Header() {
+interface HeaderProps {
+    variant?: 'default' | 'landing';
+}
+
+export default function Header({ variant = 'default' }: HeaderProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const isLanding = variant === 'landing';
+    const bgColor = isLanding ? 'bg-white/80' : 'bg-slate-950/80';
+    const textColor = isLanding ? 'text-slate-900' : 'text-white';
+    const borderColor = isLanding ? 'border-slate-200' : 'border-slate-800';
+    const linkHoverColor = isLanding ? 'hover:text-sky-600' : 'hover:text-sky-400';
+    const mobileMenuBg = isLanding ? 'bg-white/95' : 'bg-slate-950/95';
+    const navTextColor = isLanding ? 'text-slate-600' : 'text-slate-300';
+
     return (
-        <header className="fixed top-0 w-full bg-slate-950/80 backdrop-blur-sm z-50 border-b border-slate-800">
+        <header className={`fixed top-0 w-full ${bgColor} backdrop-blur-sm z-50 border-b ${borderColor}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center py-4">
                     <div className="flex items-center">
-                        <Link href="/" className="text-2xl font-bold text-white hover:text-sky-400 transition-colors">
+                        <Link href="/" className={`text-2xl font-bold ${textColor} ${linkHoverColor} transition-colors`}>
                             SkinsLabs
                         </Link>
                     </div>
@@ -19,28 +31,16 @@ export default function Header() {
                     {/* Navegación Desktop */}
                     <nav className="hidden md:flex items-center gap-8">
                         <Link
-                            href="#beneficios"
-                            className="text-slate-300 hover:text-white transition-colors"
+                            href="/"
+                            className={`${navTextColor} hover:${textColor} transition-colors`}
                         >
-                            Beneficios
+                            Agentes IA
                         </Link>
                         <Link
-                            href="#caracteristicas"
-                            className="text-slate-300 hover:text-white transition-colors"
+                            href="/landing-pages"
+                            className={`${navTextColor} hover:${textColor} transition-colors`}
                         >
-                            Características
-                        </Link>
-                        <Link 
-                            href="#precios" 
-                            className="text-slate-300 hover:text-white transition-colors"
-                        >
-                            Precios
-                        </Link>
-                        <Link 
-                            href="#faq" 
-                            className="text-slate-300 hover:text-white transition-colors"
-                        >
-                            FAQ
+                            Landing Pages
                         </Link>
                     </nav>
 
@@ -48,7 +48,7 @@ export default function Header() {
                     <div className="hidden md:block">
                         <Link
                             href="https://wa.me/56912345678?text=Hola,%20me%20interesa%20conocer%20más%20sobre%20SkinsLabs"
-                            className="bg-sky-400 text-slate-900 px-6 py-2 rounded-lg font-medium hover:bg-sky-300 transition-all duration-200"
+                            className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} px-6 py-2 rounded-lg font-medium transition-all duration-200`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -58,7 +58,7 @@ export default function Header() {
 
                     {/* Botón Menú Móvil */}
                     <button
-                        className="md:hidden p-2 rounded-lg hover:bg-slate-800 text-white"
+                        className={`md:hidden p-2 rounded-lg ${isLanding ? 'hover:bg-slate-100' : 'hover:bg-slate-800'} ${textColor}`}
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
                         {isMenuOpen ? (
@@ -75,39 +75,25 @@ export default function Header() {
 
                 {/* Menú Móvil */}
                 {isMenuOpen && (
-                    <div className="md:hidden py-4 border-t border-slate-800 bg-slate-950/95 backdrop-blur-sm">
+                    <div className={`md:hidden py-4 border-t ${borderColor} ${mobileMenuBg} backdrop-blur-sm`}>
                         <nav className="flex flex-col gap-4">
                             <Link
-                                href="#beneficios"
-                                className="text-slate-300 hover:text-white px-2 py-1 transition-colors"
+                                href="/"
+                                className={`${navTextColor} hover:${textColor} px-2 py-1 transition-colors`}
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                Beneficios
+                                Agentes IA
                             </Link>
                             <Link
-                                href="#caracteristicas"
-                                className="text-slate-300 hover:text-white px-2 py-1 transition-colors"
+                                href="/landing-pages"
+                                className={`${navTextColor} hover:${textColor} px-2 py-1 transition-colors`}
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                Características
-                            </Link>
-                            <Link 
-                                href="#precios" 
-                                className="text-slate-300 hover:text-white px-2 py-1 transition-colors"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Precios
-                            </Link>
-                            <Link 
-                                href="#faq" 
-                                className="text-slate-300 hover:text-white px-2 py-1 transition-colors"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                FAQ
+                                Landing Pages
                             </Link>
                             <Link
                                 href="https://wa.me/56912345678?text=Hola,%20me%20interesa%20conocer%20más%20sobre%20SkinsLabs"
-                                className="bg-sky-400 text-slate-900 px-6 py-2 rounded-lg font-medium hover:bg-sky-300 transition-all duration-200 text-center mx-2"
+                                className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} px-6 py-2 rounded-lg font-medium transition-all duration-200 text-center mx-2`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={() => setIsMenuOpen(false)}
