@@ -54,6 +54,14 @@ export default function Header({ variant = 'default' }: HeaderProps) {
                         >
                             Contáctanos
                         </Link>
+                        <Link
+                            href="./inicio-sesion"
+                            className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} px-6 py-2 ms-4 rounded-lg font-medium transition-all duration-200`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Inicio Sesion
+                        </Link>
                     </div>
 
                     {/* Botón Menú Móvil */}
@@ -99,6 +107,15 @@ export default function Header({ variant = 'default' }: HeaderProps) {
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 Contáctanos
+                            </Link>
+                            <Link
+                                href="https://wa.me/56912345678?text=Hola,%20me%20interesa%20conocer%20más%20sobre%20SkinsLabs"
+                                className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} px-6 py-2 rounded-lg font-medium transition-all duration-200 text-center mx-2`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                
+                            >
+                                Inicio Sesion
                             </Link>
                         </nav>
                     </div>
