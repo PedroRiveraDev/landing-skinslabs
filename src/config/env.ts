@@ -15,6 +15,10 @@ export const env = {
     // Configuración de analytics (opcional)
     GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '',
     PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || '',
+
+    // Clerk - Autenticación
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '',
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY || '',
 } as const;
 
 // Función helper para construir URLs de WhatsApp

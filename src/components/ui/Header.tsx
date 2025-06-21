@@ -4,6 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from 'next/navigation';
 import { env, getWhatsAppUrl } from "@/config/env";
+import {
+    ClerkProvider,
+    SignInButton,
+    SignUpButton,
+    SignedIn,
+    SignedOut,
+    UserButton,
+} from '@clerk/nextjs';
 
 interface HeaderProps {
     variant?: 'default' | 'landing';
@@ -68,19 +76,27 @@ export default function Header({ variant = 'default' }: HeaderProps) {
                         >
                             Landing Pages
                         </Link>
+                        <Link
+                            href="/test-page"
+                            className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
+                            aria-current={pathname === '/test-page' ? 'page' : undefined}
+                        >
+                            Página de Prueba
+                        </Link>
                     </nav>
 
                     {/* CTA Desktop */}
-                    <div className="hidden md:block">
-                        <Link
-                            href={getWhatsAppUrl()}
-                            className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} px-6 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Contactar por WhatsApp"
-                        >
-                            Contáctanos
-                        </Link>
+                    <div className="hidden md:flex items-center gap-4">
+                        <SignedOut>
+                            <SignInButton mode="modal">
+                                <button className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} px-6 py-2 rounded-lg font-medium transition-all duration-200`}>
+                                    Iniciar Sesión
+                                </button>
+                            </SignInButton>
+                        </SignedOut>
+                        <SignedIn>
+                            <UserButton />
+                        </SignedIn>
                     </div>
 
                     {/* Botón Menú Móvil */}
@@ -131,15 +147,25 @@ export default function Header({ variant = 'default' }: HeaderProps) {
                                 Landing Pages
                             </Link>
                             <Link
-                                href={getWhatsAppUrl()}
-                                className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} px-6 py-2 rounded-lg font-medium transition-all duration-200 text-center mx-2 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent`}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="/test-page"
+                                className={`${navTextColor} hover:${textColor} px-2 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded`}
                                 onClick={closeMobileMenu}
-                                aria-label="Contactar por WhatsApp"
+                                aria-current={pathname === '/test-page' ? 'page' : undefined}
                             >
-                                Contáctanos
+                                Página de Prueba
                             </Link>
+                            <div className="px-2 py-1">
+                                <SignedOut>
+                                    <SignInButton mode="modal">
+                                        <button className={`${isLanding ? 'bg-sky-500 hover:bg-sky-600 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-900'} w-full px-6 py-2 rounded-lg font-medium transition-all duration-200 text-center`}>
+                                            Iniciar Sesión
+                                        </button>
+                                    </SignInButton>
+                                </SignedOut>
+                                <SignedIn>
+                                    <UserButton />
+                                </SignedIn>
+                            </div>
                         </nav>
                     </div>
                 )}
