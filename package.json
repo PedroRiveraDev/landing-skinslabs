@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/localizations": "^3.16.5",
+    "@clerk/nextjs": "^6.22.0",
+    "@clerk/themes": "^2.2.50",
     "@fontsource/dm-serif-display": "^5.2.5",
     "@fontsource/satisfy": "^5.2.5",
     "aos": "^2.3.4",
