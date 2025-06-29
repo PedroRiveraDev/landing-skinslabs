@@ -6,6 +6,7 @@ import PortfolioLanding from '@/components/sections/landingPages/PortfolioLandin
 import TestimonialsLanding from '@/components/sections/landingPages/TestimonialsLanding';
 import { getWhatsAppUrl, env } from '@/config/env';
 
+
 export const metadata = {
     title: 'Landing Pages que Convierten | SkinsLabs',
     description: 'Diseñamos páginas de aterrizaje enfocadas en resultados para potenciar tu negocio. Landing pages profesionales y optimizadas para conversión.',
@@ -21,7 +22,7 @@ export default function LandingPagesPage() {
                 <FeaturesLanding />
                 <ProcessLanding />
                 <PortfolioLanding />
-                <TestimonialsLanding />
+                <TestimonialsLanding />                
 
                 {/* CTA Final */}
                 <section
