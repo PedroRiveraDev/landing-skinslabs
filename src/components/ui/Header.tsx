@@ -86,9 +86,9 @@ export default function Header({ variant = "default" }: HeaderProps) {
               Página de Prueba
             </Link>
             <Link
-              href="/services"
+              href="/catalogo-bots"
               className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
-              aria-current={pathname === "/services" ? "page" : undefined}
+              aria-current={pathname === "/catalogo-bots" ? "page" : undefined}
             >
               Servicios
             </Link>
