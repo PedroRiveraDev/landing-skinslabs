@@ -134,7 +134,7 @@ export default function ClientCatalogoBots() {
             </button>
             
             <h2 className="text-xl font-bold mb-4">
-                {editingBot ? "Actualizar Crear" : "Crear Bots"}
+                {editingBot ? "Actualizar Bots" : "Crear Bots"}
             </h2>
             <form
               onSubmit={async (e) => {
