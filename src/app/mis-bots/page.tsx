@@ -45,7 +45,6 @@ export default function ClientCatalogoBots() {
   const [editingBot, setEditingBot] = useState<Bot | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Cuando se clickea el botón de editar
   const handleEdit = (bot: Bot) => {
     setFormData({
       titulo: bot.titulo,
@@ -61,42 +60,32 @@ export default function ClientCatalogoBots() {
       <BackgroundDecorative />
       <article className="relative z-10">
         <Header />
-        <section className="relative z-10 flex flex-col items-center justify-center w-[90%] lg:w-full px-6 lg:px-12 pt-28 pb-20 text-center mx-auto max-w-7xl gap-y-12">
+        <section className="relative z-10 flex flex-col items-center justify-center w-[90%] lg:w-full px-6 lg:px-12 pt-28 pb-20 mx-auto max-w-7xl gap-y-12">
           <div className="flex justify-between items-center w-full">
-            <h1 className="text-3xl font-bold text-white">
-              Bots
-            </h1>
-            <button
-              onClick={() => setShowModal(true)}
-              className="bg-sky-500 hover:bg-sky-600 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200"
-            >
-              Crear Bot
-            </button>
+            <h1 className="text-3xl font-bold text-white">Bots</h1>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
-            {bots.map((bot, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+            {bots.map((bot) => (
               <div
                 key={bot.id}
-                className={`group relative flex flex-col justify-between p-6 rounded-2xl border border-slate-200 hover:border-sky-300 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] bg-gradient-to-br ${
-                  gradientColors[index % gradientColors.length]
-                } to-transparent`}
+                className="bg-white text-black rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform hover:scale-[1.02]"
               >
                 <div>
-                  <h2 className="text-2xl font-extrabold mb-4 text-slate-100">
-                    {bot.titulo}
-                  </h2>
-                  <p className="text-slate-300">{bot.descripcion}</p>
+                  <h2 className="text-xl font-bold mb-2">{bot.titulo}</h2>
+                  <p className="mb-4 text-sm text-gray-700">
+                    {bot.descripcion}
+                  </p>
                 </div>
-                <div className="mt-6 flex justify-center gap-4">
+
+                <div className="mt-4 flex justify-center gap-4">
                   <button
-                    className="bg-amber-400 hover:bg-amber-500 text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2  cursor-pointer"
                     onClick={() => handleEdit(bot)}
+                    className="bg-amber-400 hover:bg-amber-500 text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
                   >
                     Editar
                   </button>
                   <button
-                    className="bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2  cursor-pointer"
                     onClick={async () => {
                       const confirmDelete = confirm(
                         "¿Estás seguro de que quieres eliminar este bot?"
@@ -113,6 +102,7 @@ export default function ClientCatalogoBots() {
                         setIsDeleting(false);
                       }
                     }}
+                    className="bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
                   >
                     {isDeleting ? "Eliminando..." : "Eliminar"}
                   </button>
@@ -132,16 +122,15 @@ export default function ClientCatalogoBots() {
             >
               ✕
             </button>
-            
+
             <h2 className="text-xl font-bold mb-4">
-                {editingBot ? "Actualizar Bots" : "Crear Bots"}
+              {editingBot ? "Actualizar Bot" : "Crear Bot"}
             </h2>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
                 try {
                   if (editingBot) {
-                    // Si hay un bot seleccionado, actualiza
                     await actualizarBot(Number(editingBot.id), {
                       ...formData,
                       funciones: [],
@@ -152,7 +141,6 @@ export default function ClientCatalogoBots() {
                       requisitos: [],
                     });
                   } else {
-                    // Si no, crea uno nuevo
                     await crearBot({
                       ...formData,
                       funciones: [],
@@ -163,8 +151,6 @@ export default function ClientCatalogoBots() {
                       requisitos: [],
                     });
                   }
-
-                  // Limpiar el formulario
                   setFormData({ titulo: "", descripcion: "", imagenUrl: "" });
                   setEditingBot(null);
                   setShowModal(false);
@@ -208,7 +194,7 @@ export default function ClientCatalogoBots() {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-sky-500 hover:bg-sky-600 text-white px-6 py-2 rounded-md"
+                  className="bg-sky-500 hover:bg-sky-600 text-white px-6 py-2 rounded-md cursor-pointer"
                 >
                   {editingBot ? "Actualizar" : "Crear"}
                 </button>

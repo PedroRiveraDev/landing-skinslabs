@@ -89,3 +89,44 @@ export async function eliminarBot(id) {
   const json = await res.json();
   return json.data.eliminarBot;
 }
+
+
+// src/services/graphqlService.ts
+
+export async function crearBotCompleto(input) {
+  const GRAPHQL_URL = "http://localhost:8080/graphql";
+  const query = `
+    mutation($input: BotServicioInput!) {
+      crearBot(input: $input) {
+        id
+        titulo
+        descripcion
+        imagenUrl
+        funciones { id descripcion }
+        integraciones { id nombre }
+        casosUso { id descripcion }
+        tecnologias { id nombre }
+        flujosAutomatizados { id descripcion }
+        requisitos { id descripcion }
+      }
+    }
+  `;
+
+  const response = await fetch(GRAPHQL_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query,
+      variables: { input }
+    }),
+  });
+
+  const result = await response.json();
+
+  if (result.errors) {
+    console.error("Error al crear bot completo:", result.errors);
+    throw new Error(result.errors[0].message);
+  }
+
+  return result.data.crearBot;
+}
