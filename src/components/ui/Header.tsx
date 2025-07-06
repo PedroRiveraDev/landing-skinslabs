@@ -11,6 +11,7 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
+  useUser,
 } from "@clerk/nextjs";
 
 interface HeaderProps {
@@ -30,7 +31,7 @@ export default function Header({ variant = "default" }: HeaderProps) {
     : "hover:text-sky-400";
   const mobileMenuBg = isLanding ? "bg-white/95" : "bg-slate-950/95";
   const navTextColor = isLanding ? "text-slate-600" : "text-slate-300";
-
+  const { isSignedIn } = useUser();
   // Función para cerrar el menú móvil
   const closeMobileMenu = () => setIsMenuOpen(false);
 
@@ -90,7 +91,14 @@ export default function Header({ variant = "default" }: HeaderProps) {
               className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
               aria-current={pathname === "/catalogo-bots" ? "page" : undefined}
             >
-              Servicios
+              {isSignedIn && <Link href="/catalogo-bots">Servicio</Link>}
+            </Link>
+            <Link
+              href="/mis-bots"
+              className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
+              aria-current={pathname === "/mis-bots" ? "page" : undefined}
+            >
+              {isSignedIn && <Link href="/mis-bots">Mis Bots</Link>}
             </Link>
           </nav>
 

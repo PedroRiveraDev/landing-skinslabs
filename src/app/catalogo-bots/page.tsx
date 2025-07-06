@@ -2,8 +2,11 @@
 import BackgroundDecorative from "@/components/ui/BackgroundDecorative";
 import Header from "@/components/ui/Header";
 import React, { useEffect, useState } from "react";
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
-export default function CatalogoBots() {
+
+export default  function CatalogoBots() {
   const [bots, setBots] = useState<BotServicio[]>([]);
 
   useEffect(() => {
