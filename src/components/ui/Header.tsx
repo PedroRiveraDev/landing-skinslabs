@@ -11,6 +11,7 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
+  useUser,
 } from "@clerk/nextjs";
 
 interface HeaderProps {
@@ -30,7 +31,7 @@ export default function Header({ variant = "default" }: HeaderProps) {
     : "hover:text-sky-400";
   const mobileMenuBg = isLanding ? "bg-white/95" : "bg-slate-950/95";
   const navTextColor = isLanding ? "text-slate-600" : "text-slate-300";
-
+  const { isSignedIn } = useUser();
   // Función para cerrar el menú móvil
   const closeMobileMenu = () => setIsMenuOpen(false);
 
@@ -59,38 +60,54 @@ export default function Header({ variant = "default" }: HeaderProps) {
           </div>
 
           {/* Navegación Desktop */}
-          <nav
-            className="hidden md:flex items-center gap-8"
-            role="navigation"
-            aria-label="Navegación principal"
-          >
+          <nav className="hidden md:flex items-center gap-8" role="navigation">
             <Link
               href="/"
-              className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
-              aria-current={pathname === "/" ? "page" : undefined}
+              className={`${
+                pathname === "/" ? "text-sky-500 font-semibold" : navTextColor
+              } hover:${textColor} transition-colors px-2 py-1 rounded`}
             >
               Agentes IA
             </Link>
             <Link
               href="/landing-pages"
-              className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
-              aria-current={pathname === "/landing-pages" ? "page" : undefined}
+              className={`${
+                pathname === "/landing-pages"
+                  ? "text-sky-500 font-semibold"
+                  : navTextColor
+              } hover:${textColor} transition-colors px-2 py-1 rounded`}
             >
               Landing Pages
             </Link>
             <Link
               href="/test-page"
-              className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
-              aria-current={pathname === "/test-page" ? "page" : undefined}
+              className={`${
+                pathname === "/test-page"
+                  ? "text-sky-500 font-semibold"
+                  : navTextColor
+              } hover:${textColor} transition-colors px-2 py-1 rounded`}
             >
               Página de Prueba
             </Link>
             <Link
-              href="/services"
-              className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
-              aria-current={pathname === "/services" ? "page" : undefined}
+              href="/catalogo-bots"
+              className={`${
+                pathname === "/catalogo-bots"
+                  ? "text-sky-500 font-semibold"
+                  : navTextColor
+              } hover:${textColor} transition-colors px-2 py-1 rounded`}
             >
-              Servicios
+              Servicio
+            </Link>
+            <Link
+              href="/mis-bots"
+              className={`${
+                pathname === "/mis-bots"
+                  ? "text-sky-500 font-semibold"
+                  : navTextColor
+              } hover:${textColor} transition-colors px-2 py-1 rounded`}
+            >
+              Mis Bots
             </Link>
           </nav>
 
