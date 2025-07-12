@@ -70,35 +70,17 @@ export default function Header({ variant = "default" }: HeaderProps) {
               Agentes IA
             </Link>
             <Link
-              href="/landing-pages"
+              href="/bots-disponibles"
               className={`${
-                pathname === "/landing-pages"
-                  ? "text-sky-500 font-semibold"
-                  : navTextColor
+                pathname === "/bots-disponibles" ? "text-sky-500 font-semibold" : navTextColor
               } hover:${textColor} transition-colors px-2 py-1 rounded`}
             >
-              Landing Pages
+              Bots Disponibles
             </Link>
-            <Link
-              href="/test-page"
-              className={`${
-                pathname === "/test-page"
-                  ? "text-sky-500 font-semibold"
-                  : navTextColor
-              } hover:${textColor} transition-colors px-2 py-1 rounded`}
-            >
-              Página de Prueba
-            </Link>
-            <Link
-              href="/catalogo-bots"
-              className={`${
-                pathname === "/catalogo-bots"
-                  ? "text-sky-500 font-semibold"
-                  : navTextColor
-              } hover:${textColor} transition-colors px-2 py-1 rounded`}
-            >
-              Servicio
-            </Link>
+            {/* Eliminar los links a landing-pages, test-page, catalogo-bots */}
+            {/* <Link href="/landing-pages" ...>Landing Pages</Link> */}
+            {/* <Link href="/test-page" ...>Página de Prueba</Link> */}
+            {/* <Link href="/catalogo-bots" ...>Catálogo de Bots</Link> */}
             <Link
               href="/mis-bots"
               className={`${

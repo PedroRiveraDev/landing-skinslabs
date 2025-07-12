@@ -19,6 +19,11 @@ export const env = {
     // Clerk - Autenticación
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '',
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY || '',
+
+    // Configuración del Backend
+    GRAPHQL_URL: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/graphql',
+    REST_API_URL: process.env.NEXT_PUBLIC_REST_API_URL || 'http://localhost:8080/api',
+    CATALOGO_URL: process.env.NEXT_PUBLIC_CATALOGO_URL || 'http://localhost:8080/catalogo',
 } as const;
 
 // Función helper para construir URLs de WhatsApp
