@@ -11,13 +11,217 @@ import {
   eliminarBot,
 } from "@/services/graphqlService";
 import { subirImagenBot } from "@/services/imageUploadService";
-import type { Bot, BotServicioInput } from "@/interface/Bot.interface";
+import type { Bot, BotServicioInput, Funcion, Integracion, CasoUso, Tecnologia, FlujoAutomatizado, Requisito } from "@/interface/Bot.interface";
 import { env } from "@/config/env";
+import { 
+  Edit3, 
+  Trash2, 
+  Settings, 
+  Zap, 
+  Link, 
+  Target, 
+  Code, 
+  Workflow, 
+  FileText,
+  Plus,
+  Bot as BotIcon,
+  X
+} from "lucide-react";
 
 function getBotImageUrl(imagenUrl: string) {
   if (!imagenUrl) return "/placeholder.png"; // Cambia por tu placeholder real si tienes uno
   if (imagenUrl.startsWith("http")) return imagenUrl;
   return `http://localhost:8080${imagenUrl}`;
+}
+
+// Componente para la tarjeta de bot individual
+const BotCard = ({ 
+  bot, 
+  onEdit, 
+  onDelete, 
+  loading 
+}: { 
+  bot: Bot; 
+  onEdit: (bot: Bot) => void; 
+  onDelete: (bot: Bot) => void; 
+  loading: boolean;
+}) => {
+  const getStats = () => {
+    const stats = [
+      { icon: Settings, label: "Funciones", count: bot.funciones?.length || 0, color: "text-blue-600" },
+      { icon: Link, label: "Integraciones", count: bot.integraciones?.length || 0, color: "text-green-600" },
+      { icon: Target, label: "Casos de uso", count: bot.casosUso?.length || 0, color: "text-purple-600" },
+      { icon: Code, label: "Tecnologías", count: bot.tecnologias?.length || 0, color: "text-orange-600" },
+      { icon: Workflow, label: "Flujos", count: bot.flujosAutomatizados?.length || 0, color: "text-indigo-600" },
+      { icon: FileText, label: "Requisitos", count: bot.requisitos?.length || 0, color: "text-gray-600" },
+    ];
+    return stats.filter(stat => stat.count > 0);
+  };
+
+  const stats = getStats();
+
+  return (
+    <div className="bg-white/95 backdrop-blur-sm border border-white/20 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+      {/* Layout horizontal en desktop, vertical en mobile */}
+      <div className="flex flex-col lg:flex-row">
+        {/* Imagen */}
+        <div className="lg:w-48 lg:h-48 w-full h-48 lg:h-auto relative overflow-hidden">
+          <img
+            src={getBotImageUrl(bot.imagenUrl)}
+            alt={bot.titulo}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+
+        {/* Contenido */}
+        <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between">
+          <div>
+            {/* Header con título y descripción */}
+            <div className="mb-6">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl">
+                    <BotIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors">
+                    {bot.titulo}
+                  </h3>
+                </div>
+              </div>
+              <p className="text-gray-600 leading-relaxed line-clamp-2">
+                {bot.descripcion}
+              </p>
+            </div>
+
+            {/* Estadísticas */}
+            {stats.length > 0 && (
+              <div className="mb-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {stats.map((stat, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                      <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-500 font-medium">{stat.label}</span>
+                        <span className="text-sm font-semibold text-gray-900">{stat.count}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Acciones */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Activo</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onEdit(bot)}
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-100 disabled:bg-gray-100 text-amber-700 hover:text-amber-800 disabled:text-gray-400 rounded-lg font-medium transition-all duration-200 group/btn"
+              >
+                <Edit3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Editar</span>
+              </button>
+              
+              <button
+                onClick={() => onDelete(bot)}
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 disabled:bg-gray-100 text-red-700 hover:text-red-800 disabled:text-gray-400 rounded-lg font-medium transition-all duration-200 group/btn"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span className="hidden sm:inline">Eliminar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Componente auxiliar para subir y previsualizar imagen
+interface ImageUploaderProps {
+  imagePreview: string | null;
+  imagenUrl: string;
+  onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  fileInputRef: React.RefObject<HTMLInputElement>;
+}
+function ImageUploader({ imagePreview, imagenUrl, onImageChange, fileInputRef }: ImageUploaderProps) {
+  return (
+    <section className="mb-6">
+      <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2"><BotIcon className="w-5 h-5 text-blue-500" /> Imagen</h3>
+      <div className="w-full aspect-video bg-gray-100 border border-gray-200 rounded-2xl flex items-center justify-center relative overflow-hidden mb-3">
+        {(imagePreview || imagenUrl) ? (
+          <img
+            src={imagePreview ? imagePreview : getBotImageUrl(imagenUrl || "")}
+            alt="Preview"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <BotIcon className="w-16 h-16 text-gray-300" />
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={onImageChange}
+          ref={fileInputRef}
+          className="absolute inset-0 opacity-0 cursor-pointer"
+          aria-label="Seleccionar imagen"
+        />
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-white/90 px-4 py-1 rounded-full text-xs font-medium text-blue-700 shadow border border-blue-100 pointer-events-none select-none">
+          Cambiar imagen
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Componente auxiliar para listas de strings tipo chips
+interface StringListInputProps {
+  label: string;
+  value: string[];
+  onChange: (arr: string[]) => void;
+  placeholder?: string;
+  icon?: React.ReactNode;
+}
+function StringListInput({ label, value, onChange, placeholder = "", icon }: StringListInputProps) {
+  const [input, setInput] = useState<string>("");
+  return (
+    <section className="mb-6">
+      <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">{icon}{label}</h3>
+      <div className="flex flex-wrap gap-2 mb-2">
+        {value.map((item: string, i: number) => (
+          <span key={i} className="inline-flex items-center bg-blue-50 text-blue-700 rounded-full px-3 py-1 text-sm font-medium shadow-sm">
+            {item}
+            <button type="button" className="ml-2 text-blue-400 hover:text-red-500" onClick={() => onChange(value.filter((_, idx) => idx !== i))}><X className="w-4 h-4" /></button>
+          </span>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === "Enter" && input.trim()) {
+              onChange([...value, input.trim()]);
+              setInput("");
+              e.preventDefault();
+            }
+          }}
+          placeholder={placeholder}
+          className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none text-sm"
+        />
+        <button type="button" onClick={() => { if (input.trim()) { onChange([...value, input.trim()]); setInput(""); } }} className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-3 py-2 flex items-center justify-center"><Plus className="w-4 h-4" /></button>
+      </div>
+    </section>
+  );
 }
 
 export default function ClientMisBots() {
@@ -26,7 +230,10 @@ export default function ClientMisBots() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [formData, setFormData] = useState<BotServicioInput & {
+  const [formData, setFormData] = useState<{
+    titulo: string;
+    descripcion: string;
+    imagenUrl: string;
     funciones: string[];
     integraciones: string[];
     casosUso: string[];
@@ -78,32 +285,56 @@ export default function ClientMisBots() {
     }
   };
 
+  const objetoArrayToStringArray = (arr: any[], key: string) => Array.isArray(arr) ? arr.map(obj => obj?.[key] || "") : [];
+  const stringArrayToObjetoArray = (arr: string[], key: string) => Array.isArray(arr) ? arr.filter(Boolean).map(str => ({ [key]: str })) : [];
+
+  // Utilidad para mapear los arrays dinámicos manteniendo el id si existe
+  function mapStringListToObjectArray(list: string[], originalList: any[], key: 'descripcion' | 'nombre') {
+    return list.map((str) => {
+      const found = originalList?.find((obj: any) => obj?.[key] === str);
+      if (found && found.id) {
+        if (key === 'descripcion') {
+          return { id: found.id, descripcion: str };
+        } else {
+          return { id: found.id, nombre: str };
+        }
+      }
+      if (key === 'descripcion') {
+        return { descripcion: str };
+      } else {
+        return { nombre: str };
+      }
+    });
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
       setError(null);
       setSuccess(null);
-      const relacionesVacias = {
-        funciones: [],
-        integraciones: [],
-        casosUso: [],
-        tecnologias: [],
-        flujosAutomatizados: [],
-        requisitos: [],
-      };
       let imagenUrl = formData.imagenUrl;
+      // Si estamos editando, usamos los arrays originales del bot para mantener los ids
+      const original = editingBot as Bot | undefined;
+      const payload: BotServicioInput = {
+        titulo: formData.titulo,
+        descripcion: formData.descripcion,
+        imagenUrl: formData.imagenUrl,
+        funciones: formData.funciones.map(descripcion => ({ descripcion })),
+        integraciones: formData.integraciones.map(nombre => ({ nombre })),
+        casosUso: formData.casosUso.map(descripcion => ({ descripcion })),
+        tecnologias: formData.tecnologias.map(nombre => ({ nombre })),
+        flujosAutomatizados: formData.flujosAutomatizados.map(descripcion => ({ descripcion })),
+        requisitos: formData.requisitos.map(descripcion => ({ descripcion })),
+      };
       if (selectedImage) {
         const botId = editingBot ? editingBot.id : undefined;
         if (botId) {
           imagenUrl = await subirImagenBot(botId, selectedImage);
-          await actualizarBot(botId, { ...formData, imagenUrl, ...relacionesVacias });
+          await actualizarBot(botId, { ...payload, imagenUrl });
         } else {
-          // Crear bot sin imagen
-          const nuevoBot = await crearBot({ ...formData, imagenUrl: "", ...relacionesVacias });
-          // Subir imagen y dejar que el backend actualice el campo
+          const nuevoBot = await crearBot({ ...payload, imagenUrl: "" });
           await subirImagenBot(nuevoBot.id, selectedImage);
-          // Espera breve para asegurar que el backend procese la imagen
           await new Promise((res) => setTimeout(res, 400));
           await fetchBots();
           limpiarFormulario();
@@ -113,9 +344,9 @@ export default function ClientMisBots() {
         }
       } else {
         if (editingBot) {
-          await actualizarBot(editingBot.id, { ...formData, imagenUrl, ...relacionesVacias });
+          await actualizarBot(editingBot.id, { ...payload, imagenUrl });
         } else {
-          await crearBot({ ...formData, imagenUrl, ...relacionesVacias });
+          await crearBot({ ...payload, imagenUrl });
         }
       }
       await new Promise((res) => setTimeout(res, 400));
@@ -167,12 +398,12 @@ export default function ClientMisBots() {
       titulo: bot.titulo,
       descripcion: bot.descripcion,
       imagenUrl: bot.imagenUrl || "",
-      funciones: bot.funciones || [],
-      integraciones: bot.integraciones || [],
-      casosUso: bot.casosUso || [],
-      tecnologias: bot.tecnologias || [],
-      flujosAutomatizados: bot.flujosAutomatizados || [],
-      requisitos: bot.requisitos || [],
+      funciones: objetoArrayToStringArray(bot.funciones ?? [], "descripcion"),
+      integraciones: objetoArrayToStringArray(bot.integraciones ?? [], "nombre"),
+      casosUso: objetoArrayToStringArray(bot.casosUso ?? [], "descripcion"),
+      tecnologias: objetoArrayToStringArray(bot.tecnologias ?? [], "nombre"),
+      flujosAutomatizados: objetoArrayToStringArray(bot.flujosAutomatizados ?? [], "descripcion"),
+      requisitos: objetoArrayToStringArray(bot.requisitos ?? [], "descripcion"),
     });
     setImagePreview(bot.imagenUrl ? getBotImageUrl(bot.imagenUrl) : null);
     setSelectedImage(null);
@@ -192,318 +423,200 @@ export default function ClientMisBots() {
       <article className="relative z-10">
         <Header />
         <section className="relative z-10 flex flex-col items-center justify-center w-[90%] lg:w-full px-6 lg:px-12 pt-28 pb-20 mx-auto max-w-7xl gap-y-12">
-          <div className="flex justify-between items-center w-full">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Mis Bots</h1>
-              <BackendStatus className="mt-2" />
+          {/* Header con título y botón de crear */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl">
+                <BotIcon className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-1">Mis Bots</h1>
+                <p className="text-gray-300 text-sm">Gestiona y configura tus bots personalizados</p>
+                <BackendStatus className="mt-2" />
+              </div>
             </div>
+            
             <button
               onClick={handleCreateNew}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              Crear Nuevo Bot
+              <Plus className="w-5 h-5" />
+              <span>Crear Nuevo Bot</span>
             </button>
           </div>
 
+          {/* Mensajes de estado */}
           {success && (
-            <div className="w-full bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-              {success}
+            <div className="w-full bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-xl shadow-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                {success}
+              </div>
             </div>
           )}
 
           {error && (
-            <div className="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-
-          {loading && !bots.length && (
-            <div className="w-full text-center text-white">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-              <p className="mt-2">Cargando bots...</p>
-            </div>
-          )}
-
-          {!loading && bots.length === 0 && !error && (
-            <div className="w-full text-center text-white">
-              <p className="text-xl">No tienes bots creados aún.</p>
-              <p className="text-gray-300 mt-2">Crea tu primer bot haciendo clic en "Crear Nuevo Bot"</p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-            {bots.map((bot) => (
-              <div
-                key={bot.id}
-                className="bg-white text-black rounded-xl shadow-lg p-6 flex flex-col justify-between transition-transform hover:scale-[1.02]"
-              >
-                <div>
-                  <div className="mb-4">
-                    <img
-                      src={getBotImageUrl(bot.imagenUrl)}
-                      alt={bot.titulo}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                  </div>
-                  <h2 className="text-xl font-bold mb-2">{bot.titulo}</h2>
-                  <p className="mb-4 text-sm text-gray-700">
-                    {bot.descripcion}
-                  </p>
-                </div>
-
-                <div className="mt-4 flex justify-center gap-4">
-                  <button
-                    onClick={() => handleEdit(bot)}
-                    disabled={loading}
-                    className="bg-amber-400 hover:bg-amber-500 disabled:bg-gray-400 text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(bot)}
-                    disabled={loading}
-                    className="bg-rose-500 hover:bg-rose-600 disabled:bg-gray-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-                  >
-                    Eliminar
-                  </button>
-                </div>
+            <div className="w-full bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-xl shadow-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                {error}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {/* Estado de carga */}
+          {loading && !bots.length && (
+            <div className="w-full flex flex-col items-center justify-center py-16">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent mb-4"></div>
+              <p className="text-white text-lg">Cargando tus bots...</p>
+            </div>
+          )}
+
+          {/* Estado vacío */}
+          {!loading && bots.length === 0 && !error && (
+            <div className="w-full flex flex-col items-center justify-center py-16 text-center">
+              <div className="p-6 bg-white/10 rounded-3xl mb-6">
+                <BotIcon className="w-16 h-16 text-white/60" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">No tienes bots aún</h3>
+              <p className="text-gray-300 text-lg mb-8 max-w-md">
+                Crea tu primer bot personalizado para comenzar a automatizar tus tareas
+              </p>
+              <button
+                onClick={handleCreateNew}
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Crear mi primer bot</span>
+              </button>
+            </div>
+          )}
+
+          {/* Lista de bots */}
+          {!loading && bots.length > 0 && (
+            <div className="w-full space-y-6">
+              {bots.map((bot) => (
+                <BotCard
+                  key={bot.id}
+                  bot={bot}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  loading={loading}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </article>
 
+      {/* Modal de formulario - rediseñado */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-stone-50 rounded-xl shadow-lg p-6 w-full max-w-md relative text-black max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
-            >
-              ✕
-            </button>
-
-            <h2 className="text-xl font-bold mb-4">
-              {editingBot ? "Actualizar Bot" : "Crear Bot"}
-            </h2>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-all">
+          <div className="relative w-full max-w-4xl mx-auto bg-white/95 border border-white/30 shadow-2xl rounded-3xl overflow-y-auto max-h-[90vh] animate-fadeInUp">
+            {/* Header sticky */}
+            <div className="sticky top-0 z-10 bg-white/95 flex items-center justify-between px-8 pt-8 pb-4 border-b border-gray-100">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3"><BotIcon className="w-6 h-6 text-blue-600" /> {editingBot ? "Actualizar Bot" : "Crear Bot"}</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label="Cerrar"
+                type="button"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-8">
+              {/* Columna izquierda: Imagen */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Título *
-                </label>
-                <input
-                  type="text"
-                  placeholder="Título del bot"
-                  value={formData.titulo}
-                  onChange={(e) =>
-                    setFormData({ ...formData, titulo: e.target.value })
-                  }
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-black"
-                  required
+                <ImageUploader
+                  imagePreview={imagePreview}
+                  imagenUrl={formData.imagenUrl}
+                  onImageChange={handleImageChange}
+                  fileInputRef={fileInputRef}
                 />
+                <section className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Datos básicos</h3>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Título *</label>
+                  <input
+                    type="text"
+                    placeholder="Título del bot"
+                    value={formData.titulo}
+                    onChange={e => setFormData({ ...formData, titulo: e.target.value })}
+                    className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all text-base mb-4"
+                    required
+                  />
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Descripción *</label>
+                  <textarea
+                    placeholder="Descripción del bot"
+                    value={formData.descripcion}
+                    onChange={e => setFormData({ ...formData, descripcion: e.target.value })}
+                    className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all text-base h-24 resize-none"
+                    required
+                  />
+                </section>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Descripción *
-                </label>
-                <textarea
-                  placeholder="Descripción del bot"
-                  value={formData.descripcion}
-                  onChange={(e) =>
-                    setFormData({ ...formData, descripcion: e.target.value })
-                  }
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-black h-24 resize-none"
-                  required
+              {/* Columna derecha: Inputs dinámicos en secciones */}
+              <div className="flex flex-col gap-0">
+                <StringListInput
+                  label="Funciones"
+                  value={formData.funciones}
+                  onChange={arr => setFormData(fd => ({ ...fd, funciones: arr }))}
+                  placeholder="Agregar función"
+                  icon={<Edit3 className="w-5 h-5 text-blue-400" />}
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Imagen
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-black"
-                  ref={fileInputRef}
+                <StringListInput
+                  label="Integraciones"
+                  value={formData.integraciones}
+                  onChange={arr => setFormData(fd => ({ ...fd, integraciones: arr }))}
+                  placeholder="Agregar integración"
+                  icon={<Plus className="w-5 h-5 text-green-400" />}
                 />
-                {imagePreview && (
-                  <div className="mt-2">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-                {!imagePreview && formData.imagenUrl && (
-                  <div className="mt-2">
-                    <img
-                      src={getBotImageUrl(formData.imagenUrl)}
-                      alt="Imagen actual"
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Funciones
-                </label>
-                {formData.funciones.map((f, i) => (
-                  <div key={i} className="flex gap-2 mb-1">
-                    <input
-                      type="text"
-                      value={f}
-                      onChange={e => {
-                        const arr = [...formData.funciones];
-                        arr[i] = e.target.value;
-                        setFormData(fd => ({ ...fd, funciones: arr }));
-                      }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-1 text-black"
-                    />
-                    <button type="button" onClick={() => {
-                      setFormData(fd => ({ ...fd, funciones: fd.funciones.filter((_, idx) => idx !== i) }));
-                    }} className="text-red-500">✕</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setFormData(fd => ({ ...fd, funciones: [...fd.funciones, ""] }))} className="text-xs text-blue-600 mt-1">+ Agregar función</button>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Integraciones
-                </label>
-                {formData.integraciones.map((f, i) => (
-                  <div key={i} className="flex gap-2 mb-1">
-                    <input
-                      type="text"
-                      value={f}
-                      onChange={e => {
-                        const arr = [...formData.integraciones];
-                        arr[i] = e.target.value;
-                        setFormData(fd => ({ ...fd, integraciones: arr }));
-                      }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-1 text-black"
-                    />
-                    <button type="button" onClick={() => {
-                      setFormData(fd => ({ ...fd, integraciones: fd.integraciones.filter((_, idx) => idx !== i) }));
-                    }} className="text-red-500">✕</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setFormData(fd => ({ ...fd, integraciones: [...fd.integraciones, ""] }))} className="text-xs text-blue-600 mt-1">+ Agregar integración</button>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Casos de Uso
-                </label>
-                {formData.casosUso.map((f, i) => (
-                  <div key={i} className="flex gap-2 mb-1">
-                    <input
-                      type="text"
-                      value={f}
-                      onChange={e => {
-                        const arr = [...formData.casosUso];
-                        arr[i] = e.target.value;
-                        setFormData(fd => ({ ...fd, casosUso: arr }));
-                      }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-1 text-black"
-                    />
-                    <button type="button" onClick={() => {
-                      setFormData(fd => ({ ...fd, casosUso: fd.casosUso.filter((_, idx) => idx !== i) }));
-                    }} className="text-red-500">✕</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setFormData(fd => ({ ...fd, casosUso: [...fd.casosUso, ""] }))} className="text-xs text-blue-600 mt-1">+ Agregar caso de uso</button>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tecnologías
-                </label>
-                {formData.tecnologias.map((f, i) => (
-                  <div key={i} className="flex gap-2 mb-1">
-                    <input
-                      type="text"
-                      value={f}
-                      onChange={e => {
-                        const arr = [...formData.tecnologias];
-                        arr[i] = e.target.value;
-                        setFormData(fd => ({ ...fd, tecnologias: arr }));
-                      }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-1 text-black"
-                    />
-                    <button type="button" onClick={() => {
-                      setFormData(fd => ({ ...fd, tecnologias: fd.tecnologias.filter((_, idx) => idx !== i) }));
-                    }} className="text-red-500">✕</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setFormData(fd => ({ ...fd, tecnologias: [...fd.tecnologias, ""] }))} className="text-xs text-blue-600 mt-1">+ Agregar tecnología</button>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Flujos Automatizados
-                </label>
-                {formData.flujosAutomatizados.map((f, i) => (
-                  <div key={i} className="flex gap-2 mb-1">
-                    <input
-                      type="text"
-                      value={f}
-                      onChange={e => {
-                        const arr = [...formData.flujosAutomatizados];
-                        arr[i] = e.target.value;
-                        setFormData(fd => ({ ...fd, flujosAutomatizados: arr }));
-                      }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-1 text-black"
-                    />
-                    <button type="button" onClick={() => {
-                      setFormData(fd => ({ ...fd, flujosAutomatizados: fd.flujosAutomatizados.filter((_, idx) => idx !== i) }));
-                    }} className="text-red-500">✕</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setFormData(fd => ({ ...fd, flujosAutomatizados: [...fd.flujosAutomatizados, ""] }))} className="text-xs text-blue-600 mt-1">+ Agregar flujo</button>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Requisitos
-                </label>
-                {formData.requisitos.map((f, i) => (
-                  <div key={i} className="flex gap-2 mb-1">
-                    <input
-                      type="text"
-                      value={f}
-                      onChange={e => {
-                        const arr = [...formData.requisitos];
-                        arr[i] = e.target.value;
-                        setFormData(fd => ({ ...fd, requisitos: arr }));
-                      }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-1 text-black"
-                    />
-                    <button type="button" onClick={() => {
-                      setFormData(fd => ({ ...fd, requisitos: fd.requisitos.filter((_, idx) => idx !== i) }));
-                    }} className="text-red-500">✕</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setFormData(fd => ({ ...fd, requisitos: [...fd.requisitos, ""] }))} className="text-xs text-blue-600 mt-1">+ Agregar requisito</button>
-              </div>
-  
-              <div className="flex justify-end gap-2 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-sky-500 hover:bg-sky-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-md cursor-pointer"
-                >
-                  {loading ? "Guardando..." : editingBot ? "Actualizar" : "Crear"}
-                </button>
+                <StringListInput
+                  label="Casos de Uso"
+                  value={formData.casosUso}
+                  onChange={arr => setFormData(fd => ({ ...fd, casosUso: arr }))}
+                  placeholder="Agregar caso de uso"
+                  icon={<Plus className="w-5 h-5 text-purple-400" />}
+                />
+                <StringListInput
+                  label="Tecnologías"
+                  value={formData.tecnologias}
+                  onChange={arr => setFormData(fd => ({ ...fd, tecnologias: arr }))}
+                  placeholder="Agregar tecnología"
+                  icon={<Plus className="w-5 h-5 text-orange-400" />}
+                />
+                <StringListInput
+                  label="Flujos Automatizados"
+                  value={formData.flujosAutomatizados}
+                  onChange={arr => setFormData(fd => ({ ...fd, flujosAutomatizados: arr }))}
+                  placeholder="Agregar flujo"
+                  icon={<Plus className="w-5 h-5 text-indigo-400" />}
+                />
+                <StringListInput
+                  label="Requisitos"
+                  value={formData.requisitos}
+                  onChange={arr => setFormData(fd => ({ ...fd, requisitos: arr }))}
+                  placeholder="Agregar requisito"
+                  icon={<Plus className="w-5 h-5 text-gray-400" />}
+                />
+                {/* Acciones */}
+                <div className="flex justify-end gap-3 pt-8 mt-auto border-t border-gray-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-all"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-7 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold shadow-md transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {loading && <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>}
+                    {loading ? "Guardando..." : editingBot ? "Actualizar" : "Crear"}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

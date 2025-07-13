@@ -59,6 +59,12 @@ export async function obtenerBots(): Promise<Bot[]> {
         titulo
         descripcion
         imagenUrl
+        funciones { id descripcion }
+        integraciones { id nombre }
+        casosUso { id descripcion }
+        tecnologias { id nombre }
+        flujosAutomatizados { id descripcion }
+        requisitos { id descripcion }
       }
     }
   `;
@@ -75,6 +81,12 @@ export async function actualizarBot(id: string | number, input: BotServicioInput
         titulo
         descripcion
         imagenUrl
+        funciones { id descripcion }
+        integraciones { id nombre }
+        casosUso { id descripcion }
+        tecnologias { id nombre }
+        flujosAutomatizados { id descripcion }
+        requisitos { id descripcion }
       }
     }
   `;
@@ -102,6 +114,12 @@ export async function obtenerBotPorId(id: string | number): Promise<Bot> {
         titulo
         descripcion
         imagenUrl
+        funciones { id descripcion }
+        integraciones { id nombre }
+        casosUso { id descripcion }
+        tecnologias { id nombre }
+        flujosAutomatizados { id descripcion }
+        requisitos { id descripcion }
       }
     }
   `;
