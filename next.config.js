@@ -3,9 +3,23 @@ const nextConfig = {
     output: 'standalone',
     // Habilitar optimizaciones de imágenes
     images: {
-        domains: ['localhost'],
+        domains: ['localhost', '127.0.0.1'],
+        remotePatterns: [
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                port: '8080',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: '**',
+            },
+        ],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+        formats: ['image/webp', 'image/avif'],
+        minimumCacheTTL: 60 * 60 * 24 * 30, // 30 días
     },
     // Comprimir HTML, CSS y JS
     compress: true,

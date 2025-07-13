@@ -232,3 +232,172 @@ npm run lint
 Para dudas sobre las mejoras implementadas o sugerencias adicionales, contacta al equipo de desarrollo.
 
 **Nota**: Este documento se actualiza regularmente con nuevas mejoras y optimizaciones. 
+
+# Mejoras en el Manejo de Imágenes - SkinsLabs
+
+## Problemas Identificados y Soluciones Implementadas
+
+### 1. **Configuración de Next.js para Imágenes**
+
+**Problema:** La configuración de dominios de imágenes era limitada y no permitía cargar imágenes desde diferentes fuentes.
+
+**Solución:**
+- Agregado soporte para múltiples dominios (`localhost`, `127.0.0.1`)
+- Implementado `remotePatterns` para mayor flexibilidad
+- Agregado soporte para formatos modernos (WebP, AVIF)
+- Configurado caché de imágenes por 30 días
+
+```javascript
+// next.config.js
+images: {
+  domains: ['localhost', '127.0.0.1'],
+  remotePatterns: [
+    {
+      protocol: 'http',
+      hostname: 'localhost',
+      port: '8080',
+      pathname: '/**',
+    },
+    {
+      protocol: 'https',
+      hostname: '**',
+    },
+  ],
+  formats: ['image/webp', 'image/avif'],
+  minimumCacheTTL: 60 * 60 * 24 * 30, // 30 días
+}
+```
+
+### 2. **Validación de Archivos de Imagen**
+
+**Problema:** No había validación de tipo y tamaño de archivo antes de subir.
+
+**Solución:**
+- Implementada validación de tipos de archivo permitidos
+- Agregado límite de tamaño (5MB)
+- Validación en tiempo real en el frontend
+- Mensajes de error descriptivos
+
+```typescript
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+```
+
+### 3. **Mejor Manejo de Errores**
+
+**Problema:** Los errores de subida de imágenes no se manejaban adecuadamente.
+
+**Solución:**
+- Logging detallado de errores
+- Mensajes de error específicos
+- Manejo de errores de red
+- Fallback a imagen placeholder
+
+### 4. **URLs de Imágenes Mejoradas**
+
+**Problema:** La función `getBotImageUrl` no manejaba correctamente diferentes formatos de URL.
+
+**Solución:**
+- Soporte para URLs completas (http/https)
+- Soporte para rutas relativas
+- Fallback a placeholder cuando la imagen no existe
+- Logging de errores de carga
+
+```typescript
+function getBotImageUrl(imagenUrl: string) {
+  if (!imagenUrl) return "/placeholder.svg";
+  
+  if (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://")) {
+    return imagenUrl;
+  }
+  
+  if (imagenUrl.startsWith("/")) {
+    return `${env.REST_API_URL.replace('/api', '')}${imagenUrl}`;
+  }
+  
+  return `${env.REST_API_URL.replace('/api', '')}/uploads/${imagenUrl}`;
+}
+```
+
+### 5. **Interfaz de Usuario Mejorada**
+
+**Problema:** La interfaz de subida de imágenes era básica y no informativa.
+
+**Solución:**
+- Drag & drop para subir imágenes
+- Preview en tiempo real
+- Indicadores de estado de carga
+- Mensajes de error visuales
+- Validación visual del tipo de archivo
+
+### 6. **Servicio de Subida Mejorado**
+
+**Problema:** El servicio de subida no tenía suficiente logging y manejo de errores.
+
+**Solución:**
+- Logging detallado de cada paso
+- Validación antes de subir
+- Manejo específico de errores HTTP
+- Timeouts apropiados
+- Headers correctos para FormData
+
+## Nuevas Funcionalidades
+
+### 1. **Drag & Drop**
+- Los usuarios pueden arrastrar imágenes directamente al área de subida
+- Validación visual durante el drag
+- Feedback inmediato
+
+### 2. **Validación en Tiempo Real**
+- Verificación de tipo de archivo
+- Verificación de tamaño
+- Mensajes de error específicos
+
+### 3. **Fallback de Imágenes**
+- Imagen placeholder cuando no se puede cargar
+- Logging de errores de carga
+- Recuperación automática
+
+### 4. **Mejor UX**
+- Indicadores de carga
+- Mensajes de éxito/error
+- Preview de imágenes antes de subir
+
+## Archivos Modificados
+
+1. **`next.config.js`** - Configuración de imágenes
+2. **`src/services/imageUploadService.ts`** - Servicio de subida mejorado
+3. **`src/app/mis-bots/ClientMisBots.tsx`** - Componente principal con mejor UX
+4. **`public/placeholder.svg`** - Imagen placeholder
+
+## Próximos Pasos Recomendados
+
+1. **Implementar compresión de imágenes** en el frontend antes de subir
+2. **Agregar soporte para múltiples imágenes** por bot
+3. **Implementar crop/redimensionamiento** de imágenes
+4. **Agregar progreso de subida** con barra de progreso
+5. **Implementar caché de imágenes** en el frontend
+
+## Testing
+
+Para probar las mejoras:
+
+1. Intenta subir diferentes tipos de archivo (JPG, PNG, WebP)
+2. Prueba con archivos muy grandes (>5MB)
+3. Prueba el drag & drop
+4. Verifica que las imágenes se muestren correctamente
+5. Revisa los logs en la consola del navegador
+
+## Troubleshooting
+
+### Si las imágenes no cargan:
+1. Verifica que el backend esté corriendo en el puerto 8080
+2. Revisa la consola del navegador para errores
+3. Verifica que las URLs de las imágenes sean correctas
+4. Comprueba que el backend esté configurado para servir archivos estáticos
+
+### Si la subida falla:
+1. Verifica el tamaño del archivo (<5MB)
+2. Asegúrate de que el tipo de archivo sea soportado
+3. Revisa la conexión de red
+4. Verifica que el endpoint del backend esté funcionando 

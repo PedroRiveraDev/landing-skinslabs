@@ -29,9 +29,20 @@ import {
 } from "lucide-react";
 
 function getBotImageUrl(imagenUrl: string) {
-  if (!imagenUrl) return "/placeholder.png"; // Cambia por tu placeholder real si tienes uno
-  if (imagenUrl.startsWith("http")) return imagenUrl;
-  return `http://localhost:8080${imagenUrl}`;
+  if (!imagenUrl) return "/placeholder.svg"; // Usar un placeholder real
+  
+  // Si ya es una URL completa, devolverla tal como está
+  if (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://")) {
+    return imagenUrl;
+  }
+  
+  // Si es una ruta relativa que comienza con /, asumir que es del backend
+  if (imagenUrl.startsWith("/")) {
+    return `${env.REST_API_URL.replace('/api', '')}${imagenUrl}`;
+  }
+  
+  // Si es solo un nombre de archivo, construir la URL completa
+  return `${env.REST_API_URL.replace('/api', '')}/uploads/${imagenUrl}`;
 }
 
 // Componente para la tarjeta de bot individual
@@ -70,6 +81,13 @@ const BotCard = ({
             src={getBotImageUrl(bot.imagenUrl)}
             alt={bot.titulo}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              console.error('Error cargando imagen del bot:', bot.titulo, e);
+              e.currentTarget.src = '/placeholder.svg';
+            }}
+            onLoad={() => {
+              console.log('Imagen cargada exitosamente:', bot.titulo);
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
@@ -150,30 +168,106 @@ interface ImageUploaderProps {
   imagePreview: string | null;
   imagenUrl: string;
   onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 function ImageUploader({ imagePreview, imagenUrl, onImageChange, fileInputRef }: ImageUploaderProps) {
+  const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      validateAndSetFile(file);
+    }
+  };
+
+  const validateAndSetFile = (file: File) => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!allowedTypes.includes(file.type)) {
+      setError(`Tipo de archivo no permitido. Tipos permitidos: ${allowedTypes.join(', ')}`);
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setError(`El archivo es demasiado grande. Tamaño máximo: ${maxSize / (1024 * 1024)}MB`);
+      return;
+    }
+
+    setError(null);
+    // Crear un evento sintético para mantener la compatibilidad
+    const syntheticEvent = {
+      target: { files: [file] }
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+    onImageChange(syntheticEvent);
+  };
+
   return (
     <section className="mb-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2"><BotIcon className="w-5 h-5 text-blue-500" /> Imagen</h3>
-      <div className="w-full aspect-video bg-gray-100 border border-gray-200 rounded-2xl flex items-center justify-center relative overflow-hidden mb-3">
+      <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+        <BotIcon className="w-5 h-5 text-blue-500" /> Imagen
+      </h3>
+      
+      {error && (
+        <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+      
+      <div 
+        className={`w-full aspect-video bg-gray-100 border-2 border-dashed rounded-2xl flex items-center justify-center relative overflow-hidden mb-3 transition-all duration-200 ${
+          dragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+        }`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+      >
         {(imagePreview || imagenUrl) ? (
           <img
             src={imagePreview ? imagePreview : getBotImageUrl(imagenUrl || "")}
             alt="Preview"
             className="w-full h-full object-cover"
+            onError={(e) => {
+              console.error('Error cargando imagen:', e);
+              e.currentTarget.src = '/placeholder.svg';
+            }}
           />
         ) : (
-          <BotIcon className="w-16 h-16 text-gray-300" />
+          <div className="text-center">
+            <BotIcon className="w-16 h-16 text-gray-300 mx-auto mb-2" />
+            <p className="text-gray-500 text-sm">Arrastra una imagen aquí o haz clic para seleccionar</p>
+            <p className="text-gray-400 text-xs mt-1">JPG, PNG, WebP, GIF hasta 5MB</p>
+          </div>
         )}
+        
         <input
           type="file"
           accept="image/*"
-          onChange={onImageChange}
+          onChange={(e) => {
+            setError(null);
+            onImageChange(e);
+          }}
           ref={fileInputRef}
           className="absolute inset-0 opacity-0 cursor-pointer"
           aria-label="Seleccionar imagen"
         />
+        
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-white/90 px-4 py-1 rounded-full text-xs font-medium text-blue-700 shadow border border-blue-100 pointer-events-none select-none">
           Cambiar imagen
         </div>
@@ -314,6 +408,7 @@ export default function ClientMisBots() {
       setError(null);
       setSuccess(null);
       let imagenUrl = formData.imagenUrl;
+      
       // Si estamos editando, usamos los arrays originales del bot para mantener los ids
       const original = editingBot as Bot | undefined;
       const payload: BotServicioInput = {
@@ -327,19 +422,28 @@ export default function ClientMisBots() {
         flujosAutomatizados: formData.flujosAutomatizados.map(descripcion => ({ descripcion })),
         requisitos: formData.requisitos.map(descripcion => ({ descripcion })),
       };
+      
       if (selectedImage) {
-        const botId = editingBot ? editingBot.id : undefined;
-        if (botId) {
-          imagenUrl = await subirImagenBot(botId, selectedImage);
-          await actualizarBot(botId, { ...payload, imagenUrl });
-        } else {
-          const nuevoBot = await crearBot({ ...payload, imagenUrl: "" });
-          await subirImagenBot(nuevoBot.id, selectedImage);
-          await new Promise((res) => setTimeout(res, 400));
-          await fetchBots();
-          limpiarFormulario();
-          setShowModal(false);
-          setSuccess("Bot guardado correctamente.");
+        try {
+          const botId = editingBot ? editingBot.id : undefined;
+          if (botId) {
+            console.log(`Subiendo imagen para bot existente: ${botId}`);
+            imagenUrl = await subirImagenBot(botId, selectedImage);
+            await actualizarBot(botId, { ...payload, imagenUrl });
+          } else {
+            console.log('Creando nuevo bot con imagen');
+            const nuevoBot = await crearBot({ ...payload, imagenUrl: "" });
+            await subirImagenBot(nuevoBot.id, selectedImage);
+            await new Promise((res) => setTimeout(res, 400));
+            await fetchBots();
+            limpiarFormulario();
+            setShowModal(false);
+            setSuccess("Bot guardado correctamente.");
+            return;
+          }
+        } catch (imageError) {
+          console.error('Error al subir imagen:', imageError);
+          setError(`Error al subir la imagen: ${imageError instanceof Error ? imageError.message : 'Error desconocido'}`);
           return;
         }
       } else {
@@ -349,13 +453,15 @@ export default function ClientMisBots() {
           await crearBot({ ...payload, imagenUrl });
         }
       }
+      
       await new Promise((res) => setTimeout(res, 400));
       await fetchBots();
       limpiarFormulario();
       setShowModal(false);
       setSuccess("Bot guardado correctamente.");
     } catch (error) {
-      setError("Error al guardar el bot. Verifica los datos e intenta nuevamente.");
+      console.error('Error al guardar bot:', error);
+      setError(`Error al guardar el bot: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setLoading(false);
     }
