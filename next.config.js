@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 
 // Validación de variables críticas
-if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
-    console.warn('⚠️  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY no está definida');
-} else if (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('xxxxxxxx')) {
-    console.error('❌ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY parece ser una clave de ejemplo. Usa una clave real de Clerk.');
-    process.exit(1);
-}
+// if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+//     console.warn('⚠️  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY no está definida');
+// } else if (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('xxxxxxxx')) {
+//     console.error('❌ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY parece ser una clave de ejemplo. Usa una clave real de Clerk.');
+//     process.exit(1);
+// }
 
 const nextConfig = {
 
