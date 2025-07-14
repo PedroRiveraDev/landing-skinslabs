@@ -8,10 +8,26 @@ interface BotImageProps {
 }
 
 function getBotImageUrl(imagenUrl: string) {
-    if (!imagenUrl) return '/placeholder.svg';
-    if (imagenUrl.startsWith('http')) return imagenUrl;
-    // Usar URL relativa para que pase por el proxy HTTPS de Nginx
-    return imagenUrl.startsWith('/uploads/') ? imagenUrl : `/uploads/${imagenUrl}`;
+    if (!imagenUrl) return "/placeholder.svg";
+    
+    // Si ya es una URL completa, devolverla tal como está
+    if (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://")) {
+        return imagenUrl;
+    }
+    
+    // Si es una ruta que comienza con /uploads/, usar nuestro proxy interno
+    if (imagenUrl.startsWith("/uploads/")) {
+        // Usar directamente nuestro proxy API manteniendo la estructura
+        return `/api${imagenUrl}`;
+    }
+    
+    // Si es una ruta relativa que comienza con /, construir usando el proxy
+    if (imagenUrl.startsWith("/")) {
+        return `/api${imagenUrl}`;
+    }
+    
+    // Si es solo un nombre de archivo, asumir que va en uploads
+    return `/api/uploads/${imagenUrl}`;
 }
 
 export default function BotImage({ imagenUrl, titulo }: BotImageProps) {
