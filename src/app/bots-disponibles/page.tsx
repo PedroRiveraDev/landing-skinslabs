@@ -117,6 +117,10 @@ export default async function BotsDisponiblesPage() {
                                             alt={bot.titulo}
                                             className="object-cover object-center w-full h-full rounded-t-3xl border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-105"
                                             style={{ boxShadow: '0 6px 32px 0 rgba(31, 38, 135, 0.10)' }}
+                                            onError={(e) => {
+                                                console.warn(`Imagen no encontrada para ${bot.titulo}, usando placeholder`);
+                                                e.currentTarget.src = '/placeholder.svg';
+                                            }}
                                         />
                                     </div>
                                     <div className="absolute top-4 right-4 z-10">
