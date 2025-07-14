@@ -17,8 +17,10 @@ export default function BackendStatus({ className = "" }: BackendStatusProps) {
         setStatus("checking");
         setError(null);
 
-        // Intentar hacer una petición simple al endpoint GraphQL
-        const response = await fetch(env.GRAPHQL_URL, {
+        // Usar el proxy GraphQL para evitar problemas de CORS
+        const graphqlUrl = typeof window !== 'undefined' ? '/api/graphql' : env.GRAPHQL_URL;
+        
+        const response = await fetch(graphqlUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
