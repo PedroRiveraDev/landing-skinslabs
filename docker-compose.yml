@@ -10,10 +10,12 @@ services:
         CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     ports:
-      - "3000:3000"
+      - "3002:3000"
     restart: unless-stopped
     env_file:
-      - .env
+      - .env.docker
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - NODE_ENV=production
       - PORT=3000

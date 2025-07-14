@@ -12,7 +12,6 @@ import {
 } from "@/services/graphqlService";
 import { subirImagenBot } from "@/services/imageUploadService";
 import type { Bot, BotServicioInput, Funcion, Integracion, CasoUso, Tecnologia, FlujoAutomatizado, Requisito } from "@/interface/Bot.interface";
-import { env } from "@/config/env";
 import { 
   Edit3, 
   Trash2, 
@@ -29,20 +28,26 @@ import {
 } from "lucide-react";
 
 function getBotImageUrl(imagenUrl: string) {
-  if (!imagenUrl) return "/placeholder.svg"; // Usar un placeholder real
+  if (!imagenUrl) return "/placeholder.svg";
   
   // Si ya es una URL completa, devolverla tal como está
   if (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://")) {
     return imagenUrl;
   }
   
-  // Si es una ruta relativa que comienza con /, asumir que es del backend
-  if (imagenUrl.startsWith("/")) {
-    return `${env.REST_API_URL.replace('/api', '')}${imagenUrl}`;
+  // Si es una ruta que comienza con /uploads/, usar nuestro proxy interno
+  if (imagenUrl.startsWith("/uploads/")) {
+    // Usar directamente nuestro proxy API manteniendo la estructura
+    return `/api${imagenUrl}`;
   }
   
-  // Si es solo un nombre de archivo, construir la URL completa
-  return `${env.REST_API_URL.replace('/api', '')}/uploads/${imagenUrl}`;
+  // Si es una ruta relativa que comienza con /, construir usando el proxy
+  if (imagenUrl.startsWith("/")) {
+    return `/api${imagenUrl}`;
+  }
+  
+  // Si es solo un nombre de archivo, asumir que va en uploads
+  return `/api/uploads/${imagenUrl}`;
 }
 
 // Componente para la tarjeta de bot individual
@@ -76,7 +81,7 @@ const BotCard = ({
       {/* Layout horizontal en desktop, vertical en mobile */}
       <div className="flex flex-col lg:flex-row">
         {/* Imagen */}
-        <div className="lg:w-48 lg:h-48 w-full h-48 lg:h-auto relative overflow-hidden">
+        <div className="lg:w-48 w-full h-48 lg:h-48 relative overflow-hidden">
           <img
             src={getBotImageUrl(bot.imagenUrl)}
             alt={bot.titulo}

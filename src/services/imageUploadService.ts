@@ -1,6 +1,14 @@
 import { env } from '@/config/env';
 
-const REST_API_URL = env.REST_API_URL;
+// Función para obtener la URL correcta de la API REST
+function getRestApiUrl() {
+  // En el contexto del servidor (SSR), usar la URL directa del backend
+  if (typeof window === 'undefined') {
+    return env.REST_API_URL;
+  }
+  // En el cliente (browser), usar el proxy para evitar CORS
+  return '/api';
+}
 
 // Validación de archivos de imagen
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -40,9 +48,12 @@ export async function subirImagenBot(botId: string | number, archivo: File): Pro
     formData.append("file", archivo);
 
     console.log(`Subiendo imagen para bot ${botId}...`);
-    console.log(`URL del endpoint: ${REST_API_URL}/bots/${botId}/imagen`);
+    
+    const restApiUrl = getRestApiUrl();
+    const endpoint = `${restApiUrl}/bots/${botId}/imagen`;
+    console.log(`URL del endpoint: ${endpoint}`);
 
-    const response = await fetch(`${REST_API_URL}/bots/${botId}/imagen`, {
+    const response = await fetch(endpoint, {
       method: "POST",
       body: formData,
       headers: {
@@ -74,7 +85,10 @@ export async function eliminarImagenBot(botId: string | number): Promise<boolean
   try {
     console.log(`Eliminando imagen del bot ${botId}...`);
     
-    const response = await fetch(`${REST_API_URL}/bots/${botId}/imagen`, {
+    const restApiUrl = getRestApiUrl();
+    const endpoint = `${restApiUrl}/bots/${botId}/imagen`;
+    
+    const response = await fetch(endpoint, {
       method: "DELETE",
     });
 
