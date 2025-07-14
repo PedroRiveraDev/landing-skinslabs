@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_REST_API_URL || 'http://69.62.89.201:8181/api';
+const BACKEND_URL = process.env.REST_API_URL || process.env.NEXT_PUBLIC_REST_API_URL || 'http://skinslabs-backend:8080/api';
 
 export async function POST(
   request: NextRequest,

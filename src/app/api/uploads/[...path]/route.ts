@@ -6,7 +6,8 @@ export async function GET(
 ) {
   try {
     const imagePath = params.path.join('/');
-    const backendUrl = process.env.NEXT_PUBLIC_REST_API_URL?.replace('/api', '') || 'http://69.62.89.201:8181';
+    // Usar la variable de entorno interna para Docker
+    const backendUrl = process.env.REST_API_URL || process.env.NEXT_PUBLIC_REST_API_URL?.replace('/api', '') || 'http://skinslabs-backend:8080';
     const imageUrl = `${backendUrl}/uploads/${imagePath}`;
 
     console.log('🖼️ Proxy de imagen solicitada:', imageUrl);

@@ -37,6 +37,7 @@ services:
       - NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME:-SkinsLabs - Asistentes Virtuales IA}
     networks:
       - app_network
+      - skinslabs-back_skinslabs-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
@@ -47,3 +48,5 @@ services:
 networks:
   app_network:
     driver: bridge
+  skinslabs-back_skinslabs-network:
+    external: true
