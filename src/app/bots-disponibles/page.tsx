@@ -1,3 +1,6 @@
+// Forzar renderizado dinámico para evitar errores en build time
+export const dynamic = 'force-dynamic';
+
 import { obtenerBots } from '@/services/graphqlService';
 import BackgroundDecorative from '@/components/ui/BackgroundDecorative';
 import Header from '@/components/ui/Header';
@@ -252,4 +255,4 @@ export default async function BotsDisponiblesPage() {
             </div>
         </>
     );
-} 
+}
