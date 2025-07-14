@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+
+    // Variables de entorno disponibles en tiempo de build
+    env: {
+        CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    },
     output: 'standalone',
     // Ignorar errores de ESLint y TypeScript durante el build
     eslint: {
