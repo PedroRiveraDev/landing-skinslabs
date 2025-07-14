@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   web:
     build:
@@ -7,37 +5,19 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_ENV: production
-        CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
     ports:
       - "3002:3000"
     restart: unless-stopped
     env_file:
       - .env.docker
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
-      # Variables de entorno del backend
-      - NEXT_PUBLIC_GRAPHQL_URL=${NEXT_PUBLIC_GRAPHQL_URL}
-      - NEXT_PUBLIC_REST_API_URL=${NEXT_PUBLIC_REST_API_URL}
-      - NEXT_PUBLIC_CATALOGO_URL=${NEXT_PUBLIC_CATALOGO_URL}
-      # Variables de Clerk (usadas en tiempo de ejecución)
-      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-      - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
-      # Variables de WhatsApp
-      - NEXT_PUBLIC_WHATSAPP_NUMBER=${NEXT_PUBLIC_WHATSAPP_NUMBER:-56912345678}
-      - NEXT_PUBLIC_WHATSAPP_MESSAGE=${NEXT_PUBLIC_WHATSAPP_MESSAGE:-Hola,%20me%20interesa%20conocer%20más%20sobre%20SkinsLabs}
-      # Variables de la empresa
-      - NEXT_PUBLIC_COMPANY_NAME=${NEXT_PUBLIC_COMPANY_NAME:-SkinsLabs}
-      - NEXT_PUBLIC_COMPANY_DESCRIPTION=${NEXT_PUBLIC_COMPANY_DESCRIPTION:-Asistentes Virtuales con IA para automatizar tu atención al cliente}
-      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
-      - NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME:-SkinsLabs - Asistentes Virtuales IA}
     networks:
       - app_network
-      - skinslabs-back_skinslabs-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
@@ -48,5 +28,3 @@ services:
 networks:
   app_network:
     driver: bridge
-  skinslabs-back_skinslabs-network:
-    external: true
