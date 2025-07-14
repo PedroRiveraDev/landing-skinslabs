@@ -12,13 +12,15 @@ WORKDIR /app
 
 # Copiar dependencias de la etapa anterior
 COPY --from=deps /app/node_modules ./node_modules
+# Copiar archivos del proyecto
 COPY . .
 
-# Clerk env vars for build time
-ARG CLERK_PUBLISHABLE_KEY
+# Variables de entorno para build time (públicas, no secretas)
+# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY es una clave pública por diseño
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-ENV CLERK_PUBLISHABLE_KEY=${CLERK_PUBLISHABLE_KEY}
+ARG CLERK_SECRET_KEY
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+ENV CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
 
 # Construir la aplicación
 ENV NEXT_TELEMETRY_DISABLED=1

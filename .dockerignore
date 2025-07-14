@@ -4,15 +4,37 @@ node_modules
 .vscode
 .git
 *.log
-.env*
-tests
-coverage
-README.md
-Dockerfile
-docker-compose.yml
-health.js
 .gitignore
 .eslintrc*
 jest.config*
 **/*.test.*
 **/*.spec.*
+
+# Archivos de desarrollo
+README.md
+CHANGELOG.md
+.env.local
+.env.development
+.env.test
+
+# Archivos de Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Archivos de verificación y documentación
+INFORME_VERIFICACION.md
+GUIA_VPS_HOSTINGER.md
+CHECKLIST.md
+DEPLOYMENT.md
+IMPROVEMENTS.md
+BACKEND_INTEGRATION.md
+
+# Scripts de desarrollo
+deploy.sh
+health.js
+
+# Archivos temporales
+tests/
+coverage/
+.nyc_output/
