@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { obtenerBots } from '@/services/graphqlService';
 import BackgroundDecorative from '@/components/ui/BackgroundDecorative';
 import Header from '@/components/ui/Header';
+import BotImage from '@/components/ui/BotImage';
 import { getWhatsAppUrl } from '@/config/env';
 import { 
     Bot, 
@@ -23,12 +24,7 @@ export const metadata = {
     description: 'Explora los bots de automatización disponibles en SkinsLabs. Descubre sus funciones y solicita el tuyo.',
 };
 
-function getBotImageUrl(imagenUrl: string) {
-    if (!imagenUrl) return '/placeholder.png';
-    if (imagenUrl.startsWith('http')) return imagenUrl;
-    // Usar URL relativa para que pase por el proxy HTTPS de Nginx
-    return imagenUrl.startsWith('/uploads/') ? imagenUrl : `/uploads/${imagenUrl}`;
-}
+
 
 // Componente para mostrar badges de características
 const FeatureBadge = ({ icon: Icon, label }: { icon: any, label: string }) => (
@@ -112,15 +108,9 @@ export default async function BotsDisponiblesPage() {
                                 {/* Header con imagen y título */}
                                 <div className="relative">
                                 <div className="w-full h-[420px] lg:h-[560px] bg-gradient-to-br from-sky-50 to-blue-50 flex items-center justify-center overflow-hidden rounded-t-3xl">
-                                        <img
-                                            src={getBotImageUrl(bot.imagenUrl)}
-                                            alt={bot.titulo}
-                                            className="object-cover object-center w-full h-full rounded-t-3xl border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-105"
-                                            style={{ boxShadow: '0 6px 32px 0 rgba(31, 38, 135, 0.10)' }}
-                                            onError={(e) => {
-                                                console.warn(`Imagen no encontrada para ${bot.titulo}, usando placeholder`);
-                                                e.currentTarget.src = '/placeholder.svg';
-                                            }}
+                                        <BotImage 
+                                            imagenUrl={bot.imagenUrl} 
+                                            titulo={bot.titulo} 
                                         />
                                     </div>
                                     <div className="absolute top-4 right-4 z-10">
