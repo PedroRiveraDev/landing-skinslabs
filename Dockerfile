@@ -1,5 +1,5 @@
 # 1. Etapa de dependencias
-FROM node:18-alpine AS builder
+FROM node:18-alpine AS deps
 WORKDIR /app
 
 # Instalar dependencias basadas en el package-lock.json
@@ -13,6 +13,7 @@ WORKDIR /app
 # Copiar dependencias de la etapa anterior
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY .env .env
 
 # Clerk env vars for build time
 ARG CLERK_PUBLISHABLE_KEY
@@ -21,15 +22,15 @@ ENV CLERK_PUBLISHABLE_KEY=${CLERK_PUBLISHABLE_KEY}
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
 
 # Construir la aplicación
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # 3. Etapa de producción
 FROM node:18-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Instalar curl para healthcheck
 RUN apk add --no-cache curl
@@ -48,7 +49,7 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
 CMD ["node", "server.js"]
