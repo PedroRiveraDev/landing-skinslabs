@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { ClerkProvider } from '@clerk/nextjs';
+import { env } from '@/config/env';
 
 interface ClientLayoutProps {
     children: React.ReactNode;
@@ -55,5 +57,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
         };
     }, []);
 
-    return <>{children}</>;
+    return (
+        <ClerkProvider publishableKey={env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+            {children}
+        </ClerkProvider>
+    );
 } 

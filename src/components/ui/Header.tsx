@@ -5,7 +5,6 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { env, getWhatsAppUrl } from "@/config/env";
 import {
-  ClerkProvider,
   SignInButton,
   SignUpButton,
   SignedIn,
