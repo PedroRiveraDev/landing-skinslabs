@@ -14,8 +14,29 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
+      # Variables de entorno del backend
+      - NEXT_PUBLIC_GRAPHQL_URL=http://69.62.89.201:8181/graphql
+      - NEXT_PUBLIC_REST_API_URL=http://69.62.89.201:8181/api
+      - NEXT_PUBLIC_CATALOGO_URL=http://69.62.89.201:8181/catalogo
+      # Variables de Clerk (debes configurar estas en producción)
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+      # Variables de WhatsApp
+      - NEXT_PUBLIC_WHATSAPP_NUMBER=${NEXT_PUBLIC_WHATSAPP_NUMBER:-56912345678}
+      - NEXT_PUBLIC_WHATSAPP_MESSAGE=${NEXT_PUBLIC_WHATSAPP_MESSAGE:-Hola,%20me%20interesa%20conocer%20más%20sobre%20SkinsLabs}
+      # Variables de la empresa
+      - NEXT_PUBLIC_COMPANY_NAME=${NEXT_PUBLIC_COMPANY_NAME:-SkinsLabs}
+      - NEXT_PUBLIC_COMPANY_DESCRIPTION=${NEXT_PUBLIC_COMPANY_DESCRIPTION:-Asistentes Virtuales con IA para automatizar tu atención al cliente}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME:-SkinsLabs - Asistentes Virtuales IA}
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks:
   app_network:
