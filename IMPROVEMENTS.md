@@ -254,8 +254,8 @@ images: {
   remotePatterns: [
     {
       protocol: 'http',
-      hostname: 'localhost',
-      port: '8080',
+      hostname: '69.62.89.201',
+      port: '8181',
       pathname: '/**',
     },
     {
@@ -391,7 +391,7 @@ Para probar las mejoras:
 ## Troubleshooting
 
 ### Si las imágenes no cargan:
-1. Verifica que el backend esté corriendo en el puerto 8080
+1. Verifica que el backend esté corriendo en el puerto 8181
 2. Revisa la consola del navegador para errores
 3. Verifica que las URLs de las imágenes sean correctas
 4. Comprueba que el backend esté configurado para servir archivos estáticos

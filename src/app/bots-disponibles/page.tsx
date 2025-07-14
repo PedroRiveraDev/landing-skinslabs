@@ -23,7 +23,7 @@ export const metadata = {
 function getBotImageUrl(imagenUrl: string) {
     if (!imagenUrl) return '/placeholder.png';
     if (imagenUrl.startsWith('http')) return imagenUrl;
-    return `http://localhost:8080${imagenUrl}`;
+    return `http://69.62.89.201:8181${imagenUrl}`;
 }
 
 // Componente para mostrar badges de características

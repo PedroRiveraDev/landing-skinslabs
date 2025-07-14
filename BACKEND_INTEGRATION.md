@@ -10,13 +10,13 @@ Crea un archivo `.env.local` en la raíz del proyecto con las siguientes variabl
 
 ```env
 # URL del endpoint GraphQL
-NEXT_PUBLIC_GRAPHQL_URL=http://localhost:8080/graphql
+NEXT_PUBLIC_GRAPHQL_URL=http://69.62.89.201:8181/graphql
 
 # URL del endpoint REST API
-NEXT_PUBLIC_REST_API_URL=http://localhost:8080/api
+NEXT_PUBLIC_REST_API_URL=http://69.62.89.201:8181/api
 
 # URL del catálogo REST
-NEXT_PUBLIC_CATALOGO_URL=http://localhost:8080/catalogo
+NEXT_PUBLIC_CATALOGO_URL=http://69.62.89.201:8181/catalogo
 ```
 
 **Nota:** Si tu backend está en un VPS, reemplaza `localhost` con la IP o URL de tu servidor.
@@ -25,7 +25,7 @@ NEXT_PUBLIC_CATALOGO_URL=http://localhost:8080/catalogo
 
 Tu backend debe estar ejecutándose y accesible desde el frontend. Verifica que:
 
-- El servidor GraphQL esté corriendo en el puerto 8080
+- El servidor GraphQL esté corriendo en el puerto 8181
 - El servidor REST esté disponible para subir imágenes
 - CORS esté configurado correctamente en tu backend
 

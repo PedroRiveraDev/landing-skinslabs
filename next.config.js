@@ -7,8 +7,8 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'http',
-                hostname: 'localhost',
-                port: '8080',
+                hostname: '69.62.89.201',
+                port: '8181',
                 pathname: '/**',
             },
             {

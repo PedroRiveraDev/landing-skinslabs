@@ -21,9 +21,9 @@ export const env = {
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY || '',
 
     // Configuración del Backend
-    GRAPHQL_URL: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/graphql',
-    REST_API_URL: process.env.NEXT_PUBLIC_REST_API_URL || 'http://localhost:8080/api',
-    CATALOGO_URL: process.env.NEXT_PUBLIC_CATALOGO_URL || 'http://localhost:8080/catalogo',
+    GRAPHQL_URL: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://69.62.89.201:8181/graphql',
+    REST_API_URL: process.env.NEXT_PUBLIC_REST_API_URL || 'http://69.62.89.201:8181/api',
+    CATALOGO_URL: process.env.NEXT_PUBLIC_CATALOGO_URL || 'http://69.62.89.201:8181/catalogo',
 } as const;
 
 // Función helper para construir URLs de WhatsApp
