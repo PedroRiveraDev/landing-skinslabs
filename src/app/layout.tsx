@@ -6,6 +6,11 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { esES } from "@clerk/localizations";
 import { dark } from "@clerk/themes";
 
+// Validación de variables de entorno
+if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+    throw new Error('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY no está definida');
+}
+
 const inter = Inter({ subsets: ["latin"] });
 
 export { metadata };

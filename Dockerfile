@@ -14,9 +14,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Clerk env var for build time
+# Clerk env vars for build time
 ARG CLERK_PUBLISHABLE_KEY
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 ENV CLERK_PUBLISHABLE_KEY=${CLERK_PUBLISHABLE_KEY}
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
 
 # Construir la aplicación
 ENV NEXT_TELEMETRY_DISABLED 1
