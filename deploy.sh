@@ -35,7 +35,7 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# Verificar archivo .env
+# Verificar archivo .env y variables críticas
 if [ ! -f .env ]; then
     print_warning "Archivo .env no encontrado. Creando desde env.example..."
     if [ -f env.example ]; then
@@ -47,6 +47,19 @@ if [ ! -f .env ]; then
         print_error "No se encontró env.example. Por favor crea un archivo .env con las variables necesarias."
         exit 1
     fi
+fi
+
+# Verificar variables críticas
+print_status "Verificando variables de entorno..."
+if command -v node &> /dev/null; then
+    if node scripts/verify-deployment.js; then
+        print_status "✅ Variables de entorno verificadas"
+    else
+        print_error "❌ Error en la verificación de variables de entorno"
+        exit 1
+    fi
+else
+    print_warning "Node.js no está disponible, saltando verificación de variables"
 fi
 
 # Función para construir y desplegar
