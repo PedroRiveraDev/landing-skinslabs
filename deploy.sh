@@ -92,10 +92,10 @@ deploy() {
     
     # Verificar health check
     print_status "Verificando health check..."
-    if curl -f http://localhost:3000/api/health > /dev/null 2>&1; then
+    if curl -f http://localhost:3002/api/health > /dev/null 2>&1; then
         print_status "✅ Aplicación desplegada exitosamente!"
-        print_status "🌐 La aplicación está disponible en: http://localhost:3000"
-        print_status "📊 Health check: http://localhost:3000/api/health"
+        print_status "🌐 La aplicación está disponible en: http://localhost:3002"
+        print_status "📊 Health check: http://localhost:3002/api/health"
     else
         print_error "❌ La aplicación no responde al health check"
         print_status "Revisando logs..."
