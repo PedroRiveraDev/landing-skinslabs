@@ -15,10 +15,12 @@ async function graphqlRequest(query: string, variables?: any) {
         query,
         variables,
       }),
+      // Agregar timeout y manejo de errores mejorado
+      signal: AbortSignal.timeout(10000), // 10 segundos timeout
     });
 
     if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
     }
 
     const result = await response.json();
