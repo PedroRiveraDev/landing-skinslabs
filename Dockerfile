@@ -1,5 +1,5 @@
 # 1. Etapa de dependencias
-FROM node:18-alpine AS deps
+FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Instalar dependencias basadas en el package-lock.json
