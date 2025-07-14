@@ -173,36 +173,35 @@ export default function Header({ variant = "default" }: HeaderProps) {
             <nav className="flex flex-col gap-4">
               <Link
                 href="/"
-                className={`${navTextColor} hover:${textColor} px-2 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded`}
+                className={`${
+                  pathname === "/" ? "text-sky-500 font-semibold" : navTextColor
+                } hover:${textColor} px-2 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded`}
                 onClick={closeMobileMenu}
                 aria-current={pathname === "/" ? "page" : undefined}
               >
                 Agentes IA
               </Link>
               <Link
-                href="/landing-pages"
-                className={`${navTextColor} hover:${textColor} px-2 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded`}
+                href="/bots-disponibles"
+                className={`${
+                  pathname === "/bots-disponibles" ? "text-sky-500 font-semibold" : navTextColor
+                } hover:${textColor} px-2 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded`}
                 onClick={closeMobileMenu}
                 aria-current={
-                  pathname === "/landing-pages" ? "page" : undefined
+                  pathname === "/bots-disponibles" ? "page" : undefined
                 }
               >
-                Landing Pages
+                Bots Disponibles
               </Link>
               <Link
-                href="/services"
-                className={`${navTextColor} hover:${textColor} transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded px-2 py-1`}
-                aria-current={pathname === "/services" ? "page" : undefined}
-              >
-                Servicios
-              </Link>
-              <Link
-                href="/test-page"
-                className={`${navTextColor} hover:${textColor} px-2 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded`}
+                href="/mis-bots"
+                className={`${
+                  pathname === "/mis-bots" ? "text-sky-500 font-semibold" : navTextColor
+                } hover:${textColor} px-2 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-transparent rounded`}
                 onClick={closeMobileMenu}
-                aria-current={pathname === "/test-page" ? "page" : undefined}
+                aria-current={pathname === "/mis-bots" ? "page" : undefined}
               >
-                Página de Prueba
+                Mis Bots
               </Link>
               <div className="px-2 py-1">
                 <SignedOut>
