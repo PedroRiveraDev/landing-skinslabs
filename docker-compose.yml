@@ -6,19 +6,22 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=production
+        NODE_ENV: production
+        CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     ports:
       - "3000:3000"
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
       # Variables de entorno del backend
-      - NEXT_PUBLIC_GRAPHQL_URL=http://69.62.89.201:8181/graphql
-      - NEXT_PUBLIC_REST_API_URL=http://69.62.89.201:8181/api
-      - NEXT_PUBLIC_CATALOGO_URL=http://69.62.89.201:8181/catalogo
-      # Variables de Clerk (debes configurar estas en producción)
+      - NEXT_PUBLIC_GRAPHQL_URL=${NEXT_PUBLIC_GRAPHQL_URL}
+      - NEXT_PUBLIC_REST_API_URL=${NEXT_PUBLIC_REST_API_URL}
+      - NEXT_PUBLIC_CATALOGO_URL=${NEXT_PUBLIC_CATALOGO_URL}
+      # Variables de Clerk (usadas en tiempo de ejecución)
       - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
       # Variables de WhatsApp
