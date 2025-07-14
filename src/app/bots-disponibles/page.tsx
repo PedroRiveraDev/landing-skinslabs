@@ -26,7 +26,8 @@ export const metadata = {
 function getBotImageUrl(imagenUrl: string) {
     if (!imagenUrl) return '/placeholder.png';
     if (imagenUrl.startsWith('http')) return imagenUrl;
-    return `http://69.62.89.201:8181${imagenUrl}`;
+    // Usar URL relativa para que pase por el proxy HTTPS de Nginx
+    return imagenUrl.startsWith('/uploads/') ? imagenUrl : `/uploads/${imagenUrl}`;
 }
 
 // Componente para mostrar badges de características
