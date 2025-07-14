@@ -35,16 +35,24 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# Verificar archivo .env y variables críticas
-if [ ! -f .env ]; then
-    print_warning "Archivo .env no encontrado. Creando desde env.example..."
-    if [ -f env.example ]; then
-        cp env.example .env
-        print_status "Archivo .env creado. Por favor configura las variables de entorno antes de continuar."
-        print_warning "IMPORTANTE: Configura las claves de Clerk en el archivo .env antes de desplegar."
-        exit 1
+# Verificar archivo .env.docker para Docker
+if [ ! -f .env.docker ]; then
+    print_warning "Archivo .env.docker no encontrado."
+    if [ -f .env.docker.template ]; then
+        print_status "Creando .env.docker desde .env.docker.template..."
+        cp .env.docker.template .env.docker
+        print_status "✅ Archivo .env.docker creado exitosamente"
+    elif [ -f env.example ]; then
+        print_status "Creando .env.docker desde env.example..."
+        cp env.example .env.docker
+        # Agregar variables específicas de Docker
+        echo "" >> .env.docker
+        echo "# Configuración específica para Docker" >> .env.docker
+        echo "NODE_ENV=production" >> .env.docker
+        print_status "✅ Archivo .env.docker creado desde env.example"
     else
-        print_error "No se encontró env.example. Por favor crea un archivo .env con las variables necesarias."
+        print_error "No se encontró .env.docker.template ni env.example"
+        print_error "Por favor crea un archivo .env.docker con las variables necesarias."
         exit 1
     fi
 fi
