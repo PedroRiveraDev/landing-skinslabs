@@ -13,7 +13,6 @@ WORKDIR /app
 # Copiar dependencias de la etapa anterior
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY .env .env
 
 # Clerk env vars for build time
 ARG CLERK_PUBLISHABLE_KEY
